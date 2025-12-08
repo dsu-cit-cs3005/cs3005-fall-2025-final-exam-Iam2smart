@@ -17,7 +17,7 @@ Arena::Arena()
     init_board();
 }
 
-// Format (one line, 7 ints):
+// Format (one line, 6 ints):
 // rows cols num_mounds num_pits num_flames max_rounds 
 bool Arena::load_config(const std::string& filename) {
     std::ifstream fin(filename);
