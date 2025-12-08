@@ -1,22 +1,28 @@
 # Compiler
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -pedantic
+ALL_THE_OS = Arena.o RobotBase.o
 
-# Targets
-all: test_robot RobotWarz
+# Default: build both programs
+all: RobotWarz test_arena
 
-# Compile RobotBase.o
-RobotBase.o: RobotBase.cpp RobotBase.h
+RobotWarz: RobotWarz.o Arena.o RobotBase.o
+	$(CXX) $(CXXFLAGS) RobotWarz.o Arena.o RobotBase.o -ldl -o RobotWarz
+
+RobotWarz.o: RobotWarz.cpp Arena.h RobotBase.h RadarObj.h
+	$(CXX) $(CXXFLAGS) -c RobotWarz.cpp
+
+test_arena: test_arena.o TestArena.o $(ALL_THE_OS)
+	$(CXX) -g -o test_arena test_arena.o TestArena.o $(ALL_THE_OS)
+
+TestArena.o: TestArena.cpp TestArena.h Arena.h RobotBase.h RadarObj.h
+	$(CXX) $(CXXFLAGS) -c TestArena.cpp
+
+Arena.o: Arena.cpp Arena.h RadarObj.h
+	$(CXX) $(CXXFLAGS) -c Arena.cpp
+
+RobotBase.o: RobotBase.cpp RobotBase.h RadarObj.h
 	$(CXX) $(CXXFLAGS) -c RobotBase.cpp
 
-# Build test_robot (provided)
-test_robot: test_robot.cpp RobotBase.o
-	$(CXX) $(CXXFLAGS) test_robot.cpp RobotBase.o -ldl -o test_robot
-
-# Build the RobotWarz arena executable
-RobotWarz: RobotWarz.cpp Arena.cpp RobotBase.o
-	$(CXX) $(CXXFLAGS) RobotWarz.cpp Arena.cpp RobotBase.o -ldl -o RobotWarz
-
-# Cleanup
 clean:
-	rm -f *.o test_robot RobotWarz *.so
+	rm -f *.o RobotWarz test_arena *.so
